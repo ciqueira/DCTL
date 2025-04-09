@@ -46,6 +46,8 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 - **Saturation Space**: 
 - **Saturation**: 
 - **Subtractive Sat**: 
+- **Luminance**: 
+- **Chroma**: 
 
 ### Zone Controls
 
