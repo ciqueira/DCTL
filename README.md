@@ -96,6 +96,7 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 ### Under Development
 - [ ] Optimization for better performance
 - [ ] New UI parameters for fine-tuning
+- [ ] Refactoring
 
 
 ### Feature Requests
