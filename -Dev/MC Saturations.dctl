@@ -1051,12 +1051,6 @@ DEFINE_UI_PARAMS(IN_GAMUT, Input Gamut, DCTLUI_COMBO_BOX, 10, {ap0, ap1, p3d65, 
 
 
 
-
-// DEFINE_UI_PARAMS(OVERALL_VAl, Overall Value, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.001)
-// DEFINE_UI_PARAMS(HUE_Custon, Hue Custom, DCTLUI_SLIDER_FLOAT, 0.0, -2.0, 2.0, 0.001)
-
-
-
 // Tooltips
 #if ((__RESOLVE_VER_MAJOR__ > 19)) || ((__RESOLVE_VER_MAJOR__ == 19) && (__RESOLVE_VER_MINOR__ >= 1))
 
