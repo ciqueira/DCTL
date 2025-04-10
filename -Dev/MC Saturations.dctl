@@ -1040,16 +1040,12 @@ DEFINE_UI_PARAMS(DESATCH_OVE_ENABLE, Enable Luminance, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(CHROMA_OVE, Chroma, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.0001)
 DEFINE_UI_PARAMS(CHROMA_OVE_ENABLE, Enable Chroma, DCTLUI_CHECK_BOX, 1)
 
-DEFINE_UI_PARAMS(SAT_LOW, Zone Sat Low, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.0)
-DEFINE_UI_PARAMS(ZN_SAT_LOW, Pivot Low, DCTLUI_SLIDER_FLOAT, 0.0, -4.0, 4.0, 0.0)
-DEFINE_UI_PARAMS(SAT_HIGH, Zone Sat High, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.0)
-DEFINE_UI_PARAMS(ZN_SAT_HIGH, Pivot High, DCTLUI_SLIDER_FLOAT, 0.0, -4.0, 4.0, 0.0)
-DEFINE_UI_PARAMS(SAT_ZONE_ENABLE, Enable Zone, DCTLUI_CHECK_BOX, 1)
-
 DEFINE_UI_PARAMS(SPACE_TYPE, Space Type, DCTLUI_COMBO_BOX, 0, {none, hsl, hsv, hsp, chen, reuleaux, cylindrical, spherical, cone, cielab, lchab, oklab, prolab}, {None, HSL (Derived), HSV (Derived), HSP (Experimental), Chen (Experimental), Reuleaux (Experimental), Cylindrical (Experimental), Spherical (Experimental), Cone (Experimental), CIELab (Classic), LCHab (Classic), OKLab (Classic), ProLab (Experimental)})
 DEFINE_UI_PARAMS(IN_GAMUT, Input Gamut, DCTLUI_COMBO_BOX, 10, {ap0, ap1, p3d65, rec2020, rec709, awg, rwg, sgamut3, blackmagicwg, egamut, davinciwg}, {ACES, ACEScg, P3D65, Rec.2020, Rec.709, Alexa Wide Gamut, Red Wide Gamut RGB, Sony SGamut3, Blackmagic Wide Gamut, Filmlight E - Gamut, DaVinci Wide Gamut})
 
-
+DEFINE_UI_PARAMS(ZONE_SAT, Zone Saturation, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.001)
+DEFINE_UI_PARAMS(ZONE_PIVOT, Zone Pivot, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.001)
+DEFINE_UI_PARAMS(SAT_ZONE_ENABLE, Enable Zone, DCTLUI_CHECK_BOX, 1)
 
 // Tooltips
 #if ((__RESOLVE_VER_MAJOR__ > 19)) || ((__RESOLVE_VER_MAJOR__ == 19) && (__RESOLVE_VER_MINOR__ >= 1))
@@ -1136,23 +1132,22 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     
     // Calculate Saturation for each hue for subtractive saturation
     float2 subSat_curve[5] = {
-        {5.0f / 6.0f - 1.0f, SatGM},  //MAG_SAT
-        {1.0f / 6.0f,        SatYB},  //YEL_SAT
-        {3.0f / 6.0f,        SatCR},  //CYN_SAT
-        {5.0f / 6.0f,        SatGM},  //MAG_SAT
-        {1.0f / 6.0f + 1.0f, SatYB}   //YEL_SAT
+        {5.0f / 6.0f - 1.0f, 1.0f},  //MAG_SAT
+        {1.0f / 6.0f,        1.0f},  //YEL_SAT
+        {3.0f / 6.0f,        1.0f},  //CYN_SAT
+        {5.0f / 6.0f,        1.0f},  //MAG_SAT
+        {1.0f / 6.0f + 1.0f, 1.0f}   //YEL_SAT
     };
 
-    float subSat_factor = interp_linear(subSat_curve, 5, hue) * (SUBSAT_OVE+ 0.1f);
+    float subSat_factor = interp_linear(subSat_curve, 5, hue) * (SUBSAT_OVE + 0.0f);
     subSat_factor = 1.0f / subSat_factor;
-    float subSat_result = spow(sat, subSat_factor);
+    float subSat_result = SUBSAT_OVE_ENABLE ? spow(sat, subSat_factor) : sat_result - sat_result;
 
-    // Apply subtractive saturation
-    if (SUBSAT_OVE_ENABLE) {
-        sat_result = sat_result + subSat_result;
-    }
 
-    rgb = convert_colorSpace_model(make_float3(hue, sat_result, val), SPACE_TYPE, 0, IN_GAMUT);
+    float result_all = sat_result + subSat_result;
+
+    rgb = convert_colorSpace_model(make_float3(hue, result_all, val), SPACE_TYPE, 0, IN_GAMUT);
+    
 
     if(SAT_RGB_OVE_ENABLE) {
         // Join RGB modified sat and luminance
@@ -1178,25 +1173,31 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     else if (IN_GAMUT == davinciwg)     in_to_xyz = matrix_davinciwg_to_xyz;
     const float3x3 xyz_to_in = inv_f33(in_to_xyz);
 
+
     if(SAT_ZONE_ENABLE) {
-        // Convert RGB to XYZ using the input gamut conversion matrix
+        // Convert RGB to LMS space via XYZ
         xyz = mult_f3_f33(rgb, in_to_xyz);
         lms = mult_f3_f33(xyz, xyz_to_lms);
         lms /= catd65;
 
-        float n = (lms.x + lms.y + lms.z) / 3.0f;
-        float fh = _powf(n / (n + 1.0f), 1.0f / _powf(2.0f, ZN_SAT_HIGH));
-        float fl = _powf(1.0f / (n + 1.0f), 1.0f / _powf(2.0f, ZN_SAT_LOW));
+        // Calculate mean luminance
+        float mean_lum = (lms.x + lms.y + lms.z) / 3.0f;
+        
+        // Calculate zone weight with pivot control
+        // Pivot < 0: affects darker areas more
+        // Pivot > 0: affects brighter areas more
+        float zone_weight = _powf(mean_lum, 1.0f / (1.0f + ZONE_PIVOT));
+        
+        // Apply saturation adjustment with zone weighting
+        // ZONE_SAT < 1: reduces saturation
+        // ZONE_SAT > 1: increases saturation
+        float3 adjusted_lms = mean_lum + (lms - mean_lum) * ZONE_SAT;
+        lms = _mix(lms, adjusted_lms, zone_weight);
 
-        // Zoned saturation low
-        lms = lms * (1.0f - fh) + (n * (1.0f - SAT_HIGH) + lms * SAT_HIGH) * fh;
-
-        // Zoned saturation high
-        lms = lms * (1.0f - fl) + (n * (1.0f - SAT_LOW) + lms * SAT_LOW) * fl;
-
+        // Convert back to RGB
         lms *= catd65;
-        float3 out_xyz = mult_f3_f33(lms, lms_to_xyz);
-        rgb = mult_f3_f33(out_xyz, xyz_to_in);
+        xyz = mult_f3_f33(lms, lms_to_xyz);
+        rgb = mult_f3_f33(xyz, xyz_to_in);
     }
 
     return rgb;
