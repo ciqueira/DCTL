@@ -40,19 +40,19 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 
 ### Saturation Controls
 
-- **Green/Magenta**:
-- **Yellow/Blue**: 
-- **Cyan/Red**: 
-- **Saturation Space**: 
-- **Saturation**: 
-- **Subtractive Sat**: 
-- **Luminance**: 
-- **Chroma**: 
+- **Green/Magenta**: Saturation of Magenta and Green colors only
+- **Yellow/Blue**: Saturation of Yellow and Blue colors only
+- **Cyan/Red**: Saturation of Cyan and Red colors only
+- **Saturation Space**: Saturation Space for Space Type Selected
+- **Saturation**: Saturation Standard for RGB colors
+- **Subtractive Sat**: Subtractive Saturation for Space Type Selected
+- **Luminance**: Luminance for Space Type Selected
+- **Chroma**: Chroma for Space Type Selected
 
 ### Zone Controls
 
-- **Zone Saturation**: 
-- **Pivot Points**: 
+- **Zone Saturation**: "Overall Saturation Strength
+- **Pivot Points**: Balances between Shadows (-) and Highlights (+)
 
 ### Color Space Models
 
@@ -62,7 +62,7 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 - LCHab (Classic)
 - OKLab (Classic)
 - ProLab (Alternative)
-- Additional alternative models (Chen, Reuleaux, etc.)
+- Additional alternative models (HSP, Chen, Reuleaux, Cylindrical, Spherical, Cone.)
 
 ## Usage
 
@@ -72,6 +72,9 @@ Enhance saturation for different types of media, seeking maximum or desired colo
    - Experiment with different color space models
 
 ## Changelog
+
+### Version 0.0.7
+- fix SubSat
 
 ### Version 0.0.6
 - Refactoring, duplicate methods, encapsulation of variables, fix functions
@@ -89,16 +92,16 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 ## Roadmap & Future Implementations
 
 ### Planned Features
-- [ ] Enhanced zone-based controls
 - [ ] Extended gamut mapping options
 - [ ] Improved Coordinates in Lab-Based Spaces
 - [ ] Implement Vibrancy control
 - [ ] Implement Density control 
 
 ### Under Development
+- [x] Enhanced zone-based controls
 - [ ] Optimization for better performance
 - [ ] New UI parameters for fine-tuning
-- [ ] Refactoring
+- [x] Refactoring
 
 
 ### Feature Requests
@@ -112,8 +115,4 @@ Contributions are welcome! Please feel free to submit pull requests, report bugs
 
 ## License
 
-This project is licensed under OSL-3.0 - see the LICENSE file for details.
-
----
-
-Created and maintained by Magno Ciqueira
+This project is licensed under MIT - see the LICENSE file for details.

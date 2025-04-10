@@ -1040,7 +1040,7 @@ DEFINE_UI_PARAMS(DESATCH_OVE_ENABLE, Enable Luminance, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(CHROMA_OVE, Chroma, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.0001)
 DEFINE_UI_PARAMS(CHROMA_OVE_ENABLE, Enable Chroma, DCTLUI_CHECK_BOX, 1)
 
-DEFINE_UI_PARAMS(SPACE_TYPE, Space Type, DCTLUI_COMBO_BOX, 0, {none, hsl, hsv, hsp, chen, reuleaux, cylindrical, spherical, cone, cielab, lchab, oklab, prolab}, {None, HSL (Derived), HSV (Derived), HSP (Experimental), Chen (Experimental), Reuleaux (Experimental), Cylindrical (Experimental), Spherical (Experimental), Cone (Experimental), CIELab (Classic), LCHab (Classic), OKLab (Classic), ProLab (Experimental)})
+DEFINE_UI_PARAMS(SPACE_TYPE, Space Type, DCTLUI_COMBO_BOX, 0, {none, hsl, hsv, hsp, chen, reuleaux, cylindrical, spherical, cone, cielab, lchab, oklab, prolab}, {None, HSL (Derived), HSV (Derived), HSP (Alternative), Chen (Alternative), Reuleaux (Alternative), Cylindrical (Alternative), Spherical (Alternative), Cone (Alternative), CIELab (Classic), LCHab (Classic), OKLab (Classic), ProLab (Alternative)})
 DEFINE_UI_PARAMS(IN_GAMUT, Input Gamut, DCTLUI_COMBO_BOX, 10, {ap0, ap1, p3d65, rec2020, rec709, awg, rwg, sgamut3, blackmagicwg, egamut, davinciwg}, {ACES, ACEScg, P3D65, Rec.2020, Rec.709, Alexa Wide Gamut, Red Wide Gamut RGB, Sony SGamut3, Blackmagic Wide Gamut, Filmlight E - Gamut, DaVinci Wide Gamut})
 
 DEFINE_UI_PARAMS(ZONE_SAT, Zone Saturation, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.001)
@@ -1069,11 +1069,9 @@ DEFINE_UI_TOOLTIP(Enable Luminance, "Enable Luminance")
 DEFINE_UI_TOOLTIP(Chroma, "Chroma for Space Type Selected")
 DEFINE_UI_TOOLTIP(Enable Chroma, "Enable Chroma")
 
-DEFINE_UI_TOOLTIP(Zone Sat Low, "Zone Saturation for low values")
-DEFINE_UI_TOOLTIP(Pivot Low, "Pivot for low values")
-DEFINE_UI_TOOLTIP(Zone Sat High, "Zone Saturation for high values")
-DEFINE_UI_TOOLTIP(Pivot High, "Pivot for high values")
-DEFINE_UI_TOOLTIP(Enable Zone, "Enable Zone Saturation")
+DEFINE_UI_TOOLTIP(Zone Saturation, "Overall Saturation Strength")
+DEFINE_UI_TOOLTIP(Zone Balance, "Balances between Shadows (-) and Highlights (+)")
+DEFINE_UI_TOOLTIP(Enable Zone, "Enable zone-based Saturation Control")
 
 #endif
 
@@ -1141,7 +1139,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
     float subSat_factor = interp_linear(subSat_curve, 5, hue) * (SUBSAT_OVE + 0.0f);
     subSat_factor = 1.0f / subSat_factor;
-    float subSat_result = SUBSAT_OVE_ENABLE ? spow(sat, subSat_factor) : sat_result - sat_result;
+    float subSat_result = SUBSAT_OVE_ENABLE ? spow(sat, subSat_factor) : 0.0f;
 
 
     float result_all = sat_result + subSat_result;
