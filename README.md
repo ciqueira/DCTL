@@ -15,8 +15,9 @@ A collection of DCTL (DaVinci Color Transform Language) scripts for color manipu
 
 ## Overview
 
-MC Saturations
-Enhance saturation for different types of media, seeking maximum or desired color separation, with natural tones and cinematic or glossy results.
+DCTL: MC Saturations
+Enhance saturation for different types of media, seeking maximum or desired color separation, with natural tones and cinematic or glossy results. For detailed information and examples, check out the [article on Medium](https://medium.com/@magnociqueira/extrair-o-máximo-de-saturação-das-cores-e-obter-resultados-incríveis-com-uma-dctl-no-davinci-81920742599e).
+
 
 ### Key Features
 
@@ -112,6 +113,21 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 ## Contributing
 
 Contributions are welcome! Please feel free to submit pull requests, report bugs, or suggest new features.
+
+## Credits & Acknowledgments
+
+### DCTL Community & Developers
+- [hotgluebanjo](https://github.com/hotgluebanjo) - Advanced DCTL implementations
+- [Calvin Silly](https://github.com/calvinsilly) - Color science contributions
+- [Thatcher Freeman](https://github.com/thatcherfreeman/utility-dctls) - Utility DCTLs
+- [Juan Pablo Zambrano](https://github.com/JuanPabloZambrano) - Color space transformations
+- [Moaz Elgabry](https://github.com/MoazElgabry) - Color management tools
+- [Demystify Color](https://github.com/Demystify-Color) - Educational resources
+- [Kaur Hendrikson](https://github.com/KaurHendrikson) - Color grading tools
+
+### Special Thanks
+- I can't help but thank a lot of people, starting with @vicer.color Paulo Henrique, with whom I had great conversations about color, emulations and tests. I also thank @davinciresolvetutoriais Marcelo Sant’Anna, who gave me my first directions on color, in addition to the engaged community, where I met incredible people who collaborate, share knowledge and help each other.
+
 
 ## License
 
