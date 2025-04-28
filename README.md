@@ -8,7 +8,6 @@ A collection of DCTL (DaVinci Color Transform Language) scripts for color manipu
 - [Installation](#installation)
 - [Controls & Features](#controls--features)
 - [Color Space Models](#color-space-models)
-- [Usage](#usage)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
 - [License](#license)
@@ -26,16 +25,6 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 - Advanced chroma manipulation
 - Support for various color gamuts
 - Customizable pivot points and color ranges
-
-## Installation
-
-1. Download the DCTL files from this repository
-2. Copy the files to your DaVinci Resolve DCTL folder:
-   - **macOS**: `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUTs/`
-   - **Windows**: `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUTs\`
-   - **Linux**: `/home/resolve/LUTs/`
-3. Restart DaVinci Resolve
-4. Access the DCTL from the OpenFX panel
 
 ## Controls & Features
 
@@ -65,12 +54,40 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 - ProLab (Alternative)
 - Additional alternative models (HSP, Chen, Reuleaux, Cylindrical, Spherical, Cone.)
 
+## Additional Requirements
+
+### Color Range Considerations
+
+**English:**  
+DaVinci Resolve processes images in floating-point space, allowing values above 1.0 or below 0.0. While this extends the dynamic range, certain processes - such as conversion to HSV - may generate unwanted artifacts when working with negative or excessively high values. It is recommended to use a [Clamp](https://github.com/xtremestuff/resolve-dctl/blob/master/Clamp.dctl) before the DCTL Saturations node to restrict RGB channel values to stay within the 0 to 1 range, avoiding color conversion issues.
+
+**Portuguese:**  
+DaVinci Resolve processar imagens em espaço de ponto flutuante, permitindo valores acima de 1.0 ou abaixo de 0.0. Embora isso amplie a faixa dinâmica, certos processos - como a conversar para HSV - podem gerar artefatos indesejados quando se trabalha com valores negativos ou excessivamente altos. A sugestão é usar um [Clamp](https://github.com/xtremestuff/resolve-dctl/blob/master/Clamp.dctl) ante do node de DCTL Saturations, para restringir os valores dos canais RGB para que fiquem dentro do intervalo 0 a 1, evitando problemas na conversão de cores.
+
+### Setup Example
+```
+Input Image → Clamp (0-1) → DCTL Saturations → Output
+```
+
+> **Note**: This is particularly important when working with HDR footage or when previous nodes in your grade may push values outside the standard range.
+
+## Installation
+
+1. Download the DCTL files from this repository
+2. Copy the files to your DaVinci Resolve DCTL folder:
+   - **macOS**: `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUTs/`
+   - **Windows**: `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUTs\`
+   - **Linux**: `/home/resolve/LUTs/`
+3. Restart DaVinci Resolve
+4. Access the DCTL from the OpenFX panel
+
 ## Usage
 
 1. Add the DCTL as an OpenFX filter in your node tree
 2. Adjust the controls based on your needs:
    - Use color-specific controls for targeted adjustments
    - Experiment with different color space models
+
 
 ## Changelog
 
