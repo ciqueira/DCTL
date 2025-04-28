@@ -62,7 +62,7 @@ Enhance saturation for different types of media, seeking maximum or desired colo
 DaVinci Resolve processes images in floating-point space, allowing values above 1.0 or below 0.0. While this extends the dynamic range, certain processes - such as conversion to HSV - may generate unwanted artifacts when working with negative or excessively high values. It is recommended to use a [Clamp](https://github.com/xtremestuff/resolve-dctl/blob/master/Clamp.dctl) before the DCTL Saturations node to restrict RGB channel values to stay within the 0 to 1 range, avoiding color conversion issues.
 
 **Portuguese:**  
-DaVinci Resolve processar imagens em espaço de ponto flutuante, permitindo valores acima de 1.0 ou abaixo de 0.0. Embora isso amplie a faixa dinâmica, certos processos - como a conversar para HSV - podem gerar artefatos indesejados quando se trabalha com valores negativos ou excessivamente altos. A sugestão é usar um [Clamp](https://github.com/xtremestuff/resolve-dctl/blob/master/Clamp.dctl) ante do node de DCTL Saturations, para restringir os valores dos canais RGB para que fiquem dentro do intervalo 0 a 1, evitando problemas na conversão de cores.
+DaVinci Resolve processar imagens em espaço de ponto flutuante, permitindo valores acima de 1.0 ou abaixo de 0.0. Embora isso amplie a faixa dinâmica, certos processos - como a conversão para HSV - podem gerar artefatos indesejados quando se trabalha com valores negativos ou excessivamente altos. A sugestão é usar um [Clamp](https://github.com/xtremestuff/resolve-dctl/blob/master/Clamp.dctl) ante do node de DCTL Saturations, para restringir os valores dos canais RGB para que fiquem dentro do intervalo 0 a 1, evitando problemas na conversão de cores.
 
 ### Setup Example
 ```
