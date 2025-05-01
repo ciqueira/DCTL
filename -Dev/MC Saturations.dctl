@@ -42,6 +42,8 @@ __CONSTANT__ float PI_LOCAL = 3.141592653589f;
 
 // ----------------------------------------------------------
 
+
+
 __DEVICE__ inline float spow(float x, float p) {
     if (x < 0.0f) {
         return -_powf(-x, p);
@@ -145,18 +147,23 @@ __DEVICE__ float3 v_x_mtx_4x4(float3 v, float mtx[4][4])
     return out_n;
 }
 
-__DEVICE__ float normalize_gain(float3 in) {
-
-    float3 out = in;
-
-    float chroma = in.y;
-    float angle = (in.x)*2*PI;
-    angle = angle - PI/6;
-
-    chroma = chroma*_atan2f(_sqrtf(2.0f),1.0f);
-    out.y = _tanf(chroma)/_sqrtf(2.0f);
-    float chroma_gain = 1/(2*_cosf((_acosf(_sinf(3*(angle))))/3));
-
+__DEVICE__ float normalize_gain(float3 input) {
+    // Constants
+    const float SQRT_2 = _sqrtf(2.0f);
+    const float PI_6 = PI / 6.0f;
+    
+    // Calculate angle in radians and adjust by PI/6
+    float angle = input.x * 2.0f * PI - PI_6;
+    
+    // Calculate adjusted chroma
+    float chroma = input.y * _atan2f(SQRT_2, 1.0f);
+    
+    // Calculate sine of triple angle
+    float sin3angle = _sinf(3.0f * angle);
+    
+    // Calculate chroma gain using arc cosine method
+    float chroma_gain = 1.0f / (2.0f * _cosf(_acosf(sin3angle) / 3.0f));
+    
     return chroma_gain;
 }
 
@@ -168,6 +175,10 @@ __DEVICE__ float cbrtf(float x, float cube_root) {
     } else cube_root = _powf(x, 1.0f/3.0f);
 
     return cube_root;
+}
+
+__DEVICE__ inline float max3(float x, float y, float z) {
+    return _fmaxf(x, _fmaxf(y, z));
 }
 
 // ----------------------------------------------------------
